@@ -32,7 +32,7 @@ export default function App() {
         initialRouteName={"Home"}
       >
         <Stack.Screen name="Home" component={Tabs}/>
-        <Stack.Screen name="Restaurrant" component={Restaurrant}/>
+        <Stack.Screen name="Restaurant" component={Restaurrant}/>
         <Stack.Screen name="OrderDelivery" component={OrderDelivery}/>
       </Stack.Navigator>
     </NavigationContainer>

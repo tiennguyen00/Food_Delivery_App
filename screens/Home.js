@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { icons, images, SIZES, COLORS, FONTS } from '../constants';
 
-export default function Home() {
+export default function Home({ navigation }) {
 
   // Dummy Datas
 
@@ -475,7 +475,10 @@ export default function Home() {
       return (
         <TouchableOpacity
           style={{marginBottom: SIZES.padding *2}}
-          //onPress
+          onPress={() => navigation.navigate("Restaurant", {
+            item,
+            currentLocation
+          })}
         >
           {/* Image */}
           <View
