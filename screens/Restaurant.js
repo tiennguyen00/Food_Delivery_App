@@ -18,6 +18,7 @@ export default function Restaurrant({ route, navigation }) {
   //Take data from Homescreens naviagtion
   const [restaurant, setRestaurant] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [orderItems, setOrderItems] = useState([])
 
   useEffect(() => {
     let {item, currentLocation} = route.params;
@@ -25,6 +26,55 @@ export default function Restaurrant({ route, navigation }) {
     setCurrentLocation(currentLocation);
   }, []);
 
+  // Button plus, minus
+  const editOrder = (action, menuId, price) => {
+    let orderList = orderItems.slice();
+    let item = orderItems.filter(a => a.menuId == menuId);
+    if(action == '+') {
+      if(item.length > 0) {
+        let newQty = item[0].qty + 1;
+        item[0].qty = newQty;
+        item[0].total = item[0].qty * price
+      } else {
+        const newItem = {
+          menuId,
+          qty: 1,
+          price,
+          total: price
+        }
+        orderList.push(newItem);
+      }
+
+      setOrderItems(orderList);
+    }else {
+      if(item.length > 0) {
+        let newQty = item[0].qty - 1;
+        item[0].qty = newQty;
+        item[0].total = item[0].qty * price
+      }
+
+      setOrderItems(orderList)
+    }
+  }
+  const getOrderQty = (menuId) => {
+    let orderItem = orderItems.filter(a => a.menuId == menuId);
+
+    if(orderItem.length > 0) {
+      return orderItem[0].qty;
+    }
+    return 0;
+  }
+
+  const getBusketItemCount = () => {
+    const itemCount = orderItems.reduce((a, b) => a + (b.qty || 0), 0);
+    return itemCount;
+  }
+
+  const sumOrder = () => {
+    let total = orderItems.reduce((a, b) => a + (b.total || 0), 0);
+    return total.toFixed(2);
+  }
+ 
   const renderHeader = () => {
     return (
       <View style={{ flexDirection: 'row' }}>
@@ -141,6 +191,7 @@ export default function Restaurrant({ route, navigation }) {
                         borderTopLeftRadius: 25,
                         borderBottomLeftRadius: 25
                       }}
+                      onPress={() => editOrder('-', item.menuId, item.price)}
                     >
                       <Text style={{...FONTS.body1}}>-</Text>
                     </TouchableOpacity>
@@ -152,7 +203,7 @@ export default function Restaurrant({ route, navigation }) {
                         justifyContent: 'center'
                       }}
                     >
-                      <Text style={{...FONTS.h2}}>5</Text>
+                      <Text style={{...FONTS.h2}}>{getOrderQty(item.menuId)}</Text>
                     </View>
 
                     <TouchableOpacity
@@ -164,6 +215,7 @@ export default function Restaurrant({ route, navigation }) {
                         borderTopRightRadius: 25,
                         borderBottomRightRadius: 25
                       }}
+                      onPress={() => editOrder('+', item.menuId, item.price)}
                     >
                       <Text style={{...FONTS.body1}}>+</Text>
                     </TouchableOpacity>
@@ -283,8 +335,8 @@ export default function Restaurrant({ route, navigation }) {
               borderBottomWidth: 1
             }}
           >
-            <Text style={{...FONTS.h3}}>Item in cart</Text>
-            <Text style={{...FONTS.h3}} >$45</Text>
+            <Text style={{...FONTS.h3}}> {getBusketItemCount()} Item in cart</Text>
+            <Text style={{...FONTS.h3}} >{sumOrder()}</Text>
           </View>
 
           <View
@@ -341,6 +393,10 @@ export default function Restaurrant({ route, navigation }) {
                 alignItems:'center',
                 borderRadius: SIZES.radius
               }}
+              onPress={() => navigation.navigate("OrderDelivery", {
+                restaurant,
+                currentLocation
+              })}
             >
               <Text style={{color: COLORS.white, ...FONTS.h2}}>Order</Text>
             </TouchableOpacity>
