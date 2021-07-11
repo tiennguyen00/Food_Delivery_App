@@ -18,8 +18,8 @@ export default function Home({ navigation }) {
   const initialCurrentLocation = {
     streetName: "VietNam",
     gps: {
-      latitude: 13.652393,
-      longitude: 108.131763
+      latitude: 1.5496614931250685,
+      longitude: 110.36381866919922
     }
   }
 
